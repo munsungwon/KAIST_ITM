@@ -6,385 +6,447 @@
 <title>KAIST I&TM 동문회 현황</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-  background:#f4f4f2; color:#1a1a1a; padding:28px 24px;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#002855;--blue:#003478;--blue2:#1a4f9c;--blue3:#3a6ec4;
+  --gold:#c9a84c;--light:#f7f8fc;--white:#fff;
+  --gray1:#f0f2f8;--gray2:#e2e6f0;--gray3:#9aa3bc;--gray4:#4a5568;
+  --text:#1a202c;--radius:14px;--radius-sm:8px;
 }
-.header { display:flex; align-items:center; gap:14px; margin-bottom:22px; }
-.logo {
-  width:44px; height:44px; background:#003478; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:15px; font-weight:700; flex-shrink:0;
-}
-.header-text h1 { font-size:18px; font-weight:700; color:#111; }
-.header-text p  { font-size:12px; color:#999; margin-top:2px; }
+body{font-family:'Noto Sans KR',sans-serif;background:var(--light);color:var(--text);min-height:100vh;}
 
-/* 로딩 */
-.loading {
-  display:flex; flex-direction:column; align-items:center;
-  justify-content:center; padding:60px; gap:16px;
+/* 헤더 */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--blue2) 60%,var(--blue3) 100%);
+  padding:32px 32px 24px;position:relative;overflow:hidden;
 }
-.spinner {
-  width:36px; height:36px; border:3px solid #e0e0e0;
-  border-top-color:#003478; border-radius:50%;
-  animation:spin 0.8s linear infinite;
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:280px;height:280px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
 }
-@keyframes spin { to { transform:rotate(360deg); } }
-.loading p { font-size:14px; color:#888; }
-
-/* 에러 */
-.error-box {
-  background:#fff0f0; border:1px solid #ffcccc; border-radius:12px;
-  padding:20px 24px; color:#cc0000; font-size:14px; display:none;
+.hero::after{
+  content:'';position:absolute;bottom:-80px;left:30%;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(201,168,76,0.08);
 }
+.hero-inner{position:relative;z-index:1;}
+.hero-top{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.logo-badge{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.hero-title{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:3px;}
+.updated{font-size:11px;color:rgba(255,255,255,0.4);margin-left:auto;white-space:nowrap;}
 
 /* 통계 카드 */
-.stats {
-  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px;
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat{
+  background:rgba(255,255,255,0.1);border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  padding:14px 16px;
 }
-.stat {
-  background:#fff; border-radius:12px; padding:14px 16px;
-  border:1px solid #e8e8e8;
-}
-.stat .lbl { font-size:11px; color:#999; margin-bottom:4px; }
-.stat .val { font-size:26px; font-weight:700; color:#003478; }
-.stat .sub { font-size:11px; color:#bbb; margin-top:1px; }
+.stat-lbl{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;}
+.stat-val{font-size:28px;font-weight:700;color:#fff;line-height:1;}
+.stat-unit{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;}
 
 /* 탭 */
-.tabs {
-  display:flex; gap:4px; margin-bottom:16px;
-  border-bottom:2px solid #e8e8e8;
+.tab-bar{
+  display:flex;gap:2px;padding:0 32px;
+  background:var(--navy);
 }
-.tab {
-  padding:8px 18px; font-size:13px; font-weight:600;
-  color:#999; cursor:pointer; border:none; background:none;
-  border-bottom:2px solid transparent; margin-bottom:-2px;
+.tab-btn{
+  padding:12px 20px;font-size:13px;font-weight:500;
+  color:rgba(255,255,255,0.45);cursor:pointer;
+  border:none;background:none;border-bottom:3px solid transparent;
+  transition:all .2s;letter-spacing:-0.2px;
 }
-.tab.active { color:#003478; border-bottom-color:#003478; }
-.tab:hover  { color:#003478; }
+.tab-btn:hover{color:rgba(255,255,255,0.75);}
+.tab-btn.active{color:#fff;border-bottom-color:var(--gold);}
 
-.tab-content { display:none; }
-.tab-content.active { display:block; }
+/* 콘텐츠 */
+.content{padding:24px 32px 32px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
 
-.card {
-  background:#fff; border-radius:12px; padding:20px 22px;
-  border:1px solid #e8e8e8; margin-bottom:14px;
+/* 섹션 */
+.section-title{
+  font-size:15px;font-weight:700;color:var(--navy);
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;
 }
-.card h2 {
-  font-size:13px; font-weight:700; color:#333;
-  margin-bottom:4px; display:flex; align-items:center; gap:7px;
+.section-title::before{
+  content:'';width:4px;height:18px;border-radius:2px;
+  background:linear-gradient(to bottom,var(--blue),var(--gold));
 }
-.card h2 .dot {
-  width:7px; height:7px; border-radius:50%;
-  background:#003478; display:inline-block;
-}
-.card-sub { font-size:11px; color:#aaa; margin-bottom:14px; margin-left:14px; }
+.section-sub{font-size:12px;color:var(--gray3);font-weight:400;margin-left:4px;}
 
-.two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.updated-tag {
-  font-size:11px; color:#bbb; text-align:right; margin-bottom:12px;
+/* 차트 카드 */
+.chart-card{
+  background:var(--white);border-radius:var(--radius);
+  border:1px solid var(--gray2);padding:22px 24px;
+  margin-bottom:16px;
 }
-.footer { text-align:center; font-size:11px; color:#ccc; margin-top:10px; }
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+
+/* 기수별 특별 스타일 */
+.class-grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:6px;
+  margin-top:4px;
+}
+.class-item{
+  background:var(--gray1);border-radius:var(--radius-sm);
+  padding:8px 4px;text-align:center;cursor:default;
+  transition:all .2s;position:relative;
+}
+.class-item:hover{background:var(--blue);transform:translateY(-2px);}
+.class-item:hover .ci-label,.class-item:hover .ci-num{color:#fff;}
+.ci-bar{
+  width:100%;border-radius:4px;
+  background:linear-gradient(to top,var(--blue),var(--blue3));
+  margin:0 auto 5px;transition:height .3s;
+}
+.ci-num{font-size:13px;font-weight:700;color:var(--navy);}
+.ci-label{font-size:10px;color:var(--gray3);margin-top:2px;}
+
+/* 학위 도넛 */
+.degree-wrap{display:flex;align-items:center;gap:24px;}
+.degree-chart{flex:0 0 180px;height:180px;position:relative;}
+.degree-legend{flex:1;}
+.legend-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 0;border-bottom:0.5px solid var(--gray2);
+}
+.legend-item:last-child{border-bottom:none;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-name{font-size:13px;color:var(--text);flex:1;}
+.legend-count{font-size:13px;font-weight:700;color:var(--navy);}
+.legend-pct{font-size:11px;color:var(--gray3);margin-left:4px;}
+
+/* 로딩/에러 */
+.loading{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px;gap:14px;
+}
+.spinner{
+  width:36px;height:36px;border:3px solid var(--gray2);
+  border-top-color:var(--blue);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{font-size:14px;color:var(--gray3);}
+.error{
+  background:#fff0f0;border:1px solid #ffd0d0;border-radius:12px;
+  padding:16px 20px;color:#cc0000;font-size:14px;margin:20px 32px;
+  display:none;
+}
+
+/* 업종 뱃지 리스트 */
+.ind-list{display:flex;flex-direction:column;gap:8px;}
+.ind-item{display:flex;align-items:center;gap:10px;}
+.ind-bar-wrap{flex:1;height:6px;background:var(--gray1);border-radius:3px;overflow:hidden;}
+.ind-bar{height:100%;border-radius:3px;background:linear-gradient(to right,var(--blue),var(--blue3));}
+.ind-name{font-size:12px;color:var(--text);width:110px;flex-shrink:0;}
+.ind-num{font-size:12px;font-weight:700;color:var(--navy);width:32px;text-align:right;}
+.ind-pct{font-size:11px;color:var(--gray3);width:36px;text-align:right;}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">K</div>
-  <div class="header-text">
-    <h1>KAIST I&TM 동문회 현황</h1>
-    <p>기술경영전문대학원 · Notion 실시간 연동</p>
-  </div>
-</div>
+<div class="error" id="err"></div>
 
-<!-- 에러 -->
-<div class="error-box" id="error-box"></div>
-
-<!-- 로딩 -->
-<div class="loading" id="loading">
+<div id="loading" class="loading">
   <div class="spinner"></div>
-  <p>노션 데이터 불러오는 중...</p>
+  <p>데이터 불러오는 중...</p>
 </div>
 
-<!-- 본문 (데이터 로드 후 표시) -->
-<div id="main" style="display:none;">
-  <div class="updated-tag" id="updated-tag"></div>
+<div id="app" style="display:none;">
 
-  <div class="stats">
-    <div class="stat">
-      <div class="lbl">전체 동문</div>
-      <div class="val" id="s-total">-</div>
-      <div class="sub">명</div>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="logo-badge">K</div>
+      <div>
+        <div class="hero-title">KAIST I&TM 동문회 현황</div>
+        <div class="hero-sub">기술경영전문대학원 동문 네트워크</div>
+      </div>
+      <div class="updated" id="updated"></div>
     </div>
-    <div class="stat">
-      <div class="lbl">소속 기업/기관</div>
-      <div class="val" id="s-company">-</div>
-      <div class="sub">개</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">업종</div>
-      <div class="val" id="s-industry">-</div>
-      <div class="sub">개 분야</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">기수</div>
-      <div class="val" id="s-class">-</div>
-      <div class="sub">기</div>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('company', this)">소속회사별</button>
-    <button class="tab" onclick="showTab('industry', this)">업종별</button>
-    <button class="tab" onclick="showTab('class', this)">기수별</button>
-    <button class="tab" onclick="showTab('degree', this)">학위별</button>
-  </div>
-
-  <!-- 소속회사 -->
-  <div id="tab-company" class="tab-content active">
-    <div class="card">
-      <h2><span class="dot"></span>소속회사별 동문 인원</h2>
-      <div class="card-sub" id="company-sub"></div>
-      <div style="position:relative; height:520px;">
-        <canvas id="companyChart"></canvas>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-lbl">전체 동문</div>
+        <div class="stat-val" id="s-total">—</div>
+        <div class="stat-unit">명</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">소속 기업/기관</div>
+        <div class="stat-val" id="s-company">—</div>
+        <div class="stat-unit">개</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">업종</div>
+        <div class="stat-val" id="s-industry">—</div>
+        <div class="stat-unit">개 분야</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">기수</div>
+        <div class="stat-val" id="s-class">—</div>
+        <div class="stat-unit">기</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- 업종 -->
-  <div id="tab-industry" class="tab-content">
-    <div class="card">
-      <h2><span class="dot"></span>업종별 동문 분포</h2>
-      <div class="card-sub" id="industry-sub"></div>
-      <div style="position:relative; height:380px;">
-        <canvas id="industryChart"></canvas>
-      </div>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="tab('company',this)">소속회사별</button>
+  <button class="tab-btn" onclick="tab('industry',this)">업종별</button>
+  <button class="tab-btn" onclick="tab('class',this)">기수별</button>
+  <button class="tab-btn" onclick="tab('degree',this)">학위별</button>
+</div>
+
+<div class="content">
+
+  <!-- 소속회사별 -->
+  <div id="p-company" class="tab-panel active">
+    <div class="chart-card">
+      <div class="section-title">소속회사별 동문 인원<span class="section-sub" id="co-sub"></span></div>
+      <div style="position:relative;height:500px;"><canvas id="coChart"></canvas></div>
     </div>
   </div>
 
-  <!-- 기수 -->
-  <div id="tab-class" class="tab-content">
-    <div class="card">
-      <h2><span class="dot"></span>기수별 동문 현황</h2>
-      <div class="card-sub" id="class-sub"></div>
-      <div style="position:relative; height:260px;">
-        <canvas id="classChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- 학위 -->
-  <div id="tab-degree" class="tab-content">
+  <!-- 업종별 -->
+  <div id="p-industry" class="tab-panel">
     <div class="two-col">
-      <div class="card">
-        <h2><span class="dot"></span>최종학위 분포</h2>
-        <div style="position:relative; height:260px;">
-          <canvas id="degreeChart"></canvas>
-        </div>
+      <div class="chart-card">
+        <div class="section-title">업종별 분포</div>
+        <div style="position:relative;height:320px;"><canvas id="indChart"></canvas></div>
       </div>
-      <div class="card">
-        <h2><span class="dot"></span>업종 TOP 5</h2>
-        <div style="position:relative; height:260px;">
-          <canvas id="topChart"></canvas>
-        </div>
+      <div class="chart-card">
+        <div class="section-title">업종별 인원</div>
+        <div class="ind-list" id="ind-list"></div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="footer">KAIST 기술경영전문대학원 (I&TM) 동문회 · Powered by Notion API</div>
+  <!-- 기수별 -->
+  <div id="p-class" class="tab-panel">
+    <div class="chart-card">
+      <div class="section-title">기수별 동문 현황</div>
+      <div class="class-grid" id="class-grid"></div>
+    </div>
+    <div class="chart-card" style="margin-top:0;">
+      <div class="section-title">기수별 추이<span class="section-sub">1기~32기</span></div>
+      <div style="position:relative;height:220px;"><canvas id="clChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 학위별 -->
+  <div id="p-degree" class="tab-panel">
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="section-title">최종학위 분포</div>
+        <div class="degree-wrap">
+          <div class="degree-chart"><canvas id="degChart"></canvas></div>
+          <div class="degree-legend" id="deg-legend"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="section-title">석·박사 비율</div>
+        <div style="position:relative;height:200px;"><canvas id="degChart2"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
 
 <script>
-const BLUES = [
-  '#003478','#0A3E88','#144892','#1E529C','#285CA6','#3266B0',
-  '#3C70BA','#467AC4','#5084CE','#5A8ED8','#6498E2','#6EA2EC',
-  '#78ACF6','#003478','#1E529C','#3C70BA','#5A8ED8','#78ACF6',
-  '#003478','#0A3E88','#144892','#1E529C','#285CA6','#3266B0',
-  '#3C70BA','#467AC4','#5084CE','#5A8ED8','#6498E2','#6EA2EC','#aac4e8'
-];
+const DATA = {
+  company: {"삼성전자":33,"KT":26,"한국과학기술원(KAIST)":22,"현대자동차":18,"LG에너지솔루션":14,"한국전자통신연구원(ETRI)":10,"한국에너지기술연구원":8,"한국연구재단":8,"한국수자원공사":7,"한국항공우주산업":7,"기초과학연구원(IBS)":7,"현대모비스":6,"대한항공":6,"공군":6,"현대중공업":6,"SK하이닉스":5,"한국기계연구원(KIMM)":5,"삼성디스플레이":5,"LG화학":5,"한국표준과학연구원":5,"SK온":5,"연구개발특구진흥재단":4,"한국화학연구원":4,"대전광역시":4,"한국과학기술정보연구원(KISTI)":4,"SK텔레콤":4,"산업통상자원부":4,"한국조폐공사":4,"기술보증기금(KIBO)":4,"한국생명공학연구원":4,"기타":322},
+  industry: {"연구기관/대학":100,"IT/SW":99,"공공기관/정부":65,"전자/전기":52,"에너지/배터리":47,"자동차/모빌리티":42,"금융/투자":36,"화학/소재":33,"항공/방산":28,"반도체":17,"바이오/제약/의료":15,"조선/해운":15,"무역/유통":7,"컨설팅/법률":6,"디스플레이":6,"미디어/콘텐츠":3,"건설/인프라":1},
+  class: {"1기":11,"2기":19,"3기":20,"4기":43,"5기":41,"6기":41,"7기":6,"8기":29,"9기":9,"10기":26,"11기":8,"12기":19,"13기":14,"14기":19,"15기":18,"16기":19,"17기":16,"18기":12,"19기":17,"20기":27,"21기":19,"22기":12,"23기":22,"24기":14,"25기":11,"26기":13,"27기":17,"28기":17,"29기":18,"30기":16,"31기":20,"32기":15},
+  degree: {"석사":329,"석사과정":155,"박사":54,"박사과정":41,"학사":15,"기타":1},
+  total: 608, companies: 295, industries: 17, classes: 32
+};
 
+const BLUE_PALETTE = ['#002855','#003478','#0a4090','#1a5296','#2a64a2','#3a76ae','#4a88ba','#5a9ac6','#6aacd2','#002855','#003478','#0a4090','#1a5296','#2a64a2','#3a76ae','#4a88ba','#5a9ac6','#6aacd2','#7abede','#8ad0ea','#002855','#003478','#0a4090','#1a5296','#2a64a2','#3a76ae','#4a88ba','#5a9ac6','#6aacd2','#7abede','#c8c8c8'];
+const DEG_COLORS = ['#002855','#1a5296','#3a76ae','#6aacd2','#a8cfe8','#d0e4f0'];
 const charts = {};
-let globalStats = null;
 
-// ── 탭 전환 ──
-function showTab(name, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+function tab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+name).classList.add('active');
   btn.classList.add('active');
-
-  if (!charts[name] && globalStats) renderChart(name, globalStats);
+  if (!charts[name]) render(name);
 }
 
-// ── 데이터 fetch ──
-async function loadData() {
-  try {
-    const res  = await fetch('/api/notion-data');
-    const json = await res.json();
-
-    if (!res.ok) throw new Error(json.error || '데이터 로드 실패');
-
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('main').style.display    = 'block';
-
-    const { total, updated, stats } = json;
-    globalStats = stats;
-
-    // 통계 카드
-    document.getElementById('s-total').textContent   = total.toLocaleString();
-    document.getElementById('s-company').textContent = Object.keys(stats.company).length;
-    document.getElementById('s-industry').textContent= Object.keys(stats.industry).length;
-    document.getElementById('s-class').textContent   = Object.keys(stats.class).length;
-
-    // 업데이트 시각
-    const d = new Date(updated);
-    document.getElementById('updated-tag').textContent =
-      `최종 업데이트: ${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-
-    // 첫 탭(소속회사) 렌더링
-    renderChart('company', stats);
-
-  } catch (err) {
-    document.getElementById('loading').style.display   = 'none';
-    const box = document.getElementById('error-box');
-    box.style.display = 'block';
-    box.textContent   = '⚠️ 오류: ' + err.message;
-  }
+function render(name) {
+  if (name==='company') renderCompany();
+  if (name==='industry') renderIndustry();
+  if (name==='class') renderClass();
+  if (name==='degree') renderDegree();
 }
 
-// ── 차트 렌더링 ──
-function renderChart(name, stats) {
-  if (name === 'company') {
-    const all    = Object.entries(stats.company);
-    const top30  = all.slice(0, 30);
-    const others = all.slice(30).reduce((s, [,v]) => s+v, 0);
-    const labels = top30.map(([k]) => k);
-    const values = top30.map(([,v]) => v);
-    if (others > 0) { labels.push('기타'); values.push(others); }
-
-    document.getElementById('company-sub').textContent =
-      `상위 30개 기업/기관 표시 (전체 ${all.length}개)`;
-
-    charts.company = new Chart(document.getElementById('companyChart'), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          data: values,
-          backgroundColor: labels.map((l,i) => l === '기타' ? '#d0d0d0' : BLUES[i % BLUES.length]),
-          borderRadius: 4, borderSkipped: false,
-        }]
-      },
-      options: barOpts('y'),
-    });
-  }
-
-  if (name === 'industry') {
-    const entries = Object.entries(stats.industry);
-    document.getElementById('industry-sub').textContent =
-      `전체 ${entries.length}개 업종`;
-
-    charts.industry = new Chart(document.getElementById('industryChart'), {
-      type: 'bar',
-      data: {
-        labels: entries.map(([k]) => k),
-        datasets: [{
-          data: entries.map(([,v]) => v),
-          backgroundColor: BLUES,
-          borderRadius: 5, borderSkipped: false,
-        }]
-      },
-      options: barOpts('y'),
-    });
-  }
-
-  if (name === 'class') {
-    const entries = Object.entries(stats.class);
-    document.getElementById('class-sub').textContent =
-      `1기~${entries[entries.length-1]?.[0] || ''}`;
-
-    charts.class = new Chart(document.getElementById('classChart'), {
-      type: 'bar',
-      data: {
-        labels: entries.map(([k]) => k),
-        datasets: [{
-          data: entries.map(([,v]) => v),
-          backgroundColor: '#003478',
-          borderRadius: 3, borderSkipped: false,
-        }]
-      },
-      options: barOpts('x'),
-    });
-  }
-
-  if (name === 'degree') {
-    const degEntries = Object.entries(stats.degree);
-    charts.degree = new Chart(document.getElementById('degreeChart'), {
-      type: 'doughnut',
-      data: {
-        labels: degEntries.map(([k]) => k),
-        datasets: [{
-          data: degEntries.map(([,v]) => v),
-          backgroundColor: ['#003478','#1E529C','#3C70BA','#5A8ED8','#8ab4e8','#c2d8f4'],
-          borderWidth: 2, borderColor: '#fff', hoverOffset: 6,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false, cutout: '62%',
-        plugins: {
-          legend: { display:true, position:'bottom',
-            labels: { font:{size:11}, color:'#555', padding:8, boxWidth:12 } },
-          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}명` } }
-        }
-      }
-    });
-
-    const top5 = Object.entries(stats.industry).slice(0, 5);
-    charts.top = new Chart(document.getElementById('topChart'), {
-      type: 'pie',
-      data: {
-        labels: top5.map(([k]) => k),
-        datasets: [{
-          data: top5.map(([,v]) => v),
-          backgroundColor: ['#003478','#1E529C','#3C70BA','#5A8ED8','#8ab4e8'],
-          borderWidth: 2, borderColor: '#fff', hoverOffset: 6,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display:true, position:'bottom',
-            labels: { font:{size:11}, color:'#555', padding:8, boxWidth:12 } },
-          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}명` } }
-        }
-      }
-    });
-  }
-}
-
-// ── 공통 막대 옵션 ──
-function barOpts(axis) {
-  return {
-    responsive: true, maintainAspectRatio: false,
-    indexAxis: axis,
-    plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: ctx => ` ${ctx.raw}명` } }
+function renderCompany() {
+  const entries = Object.entries(DATA.company);
+  const labels = entries.map(([k])=>k);
+  const values = entries.map(([,v])=>v);
+  document.getElementById('co-sub').textContent = ` — 상위 30개 (전체 ${DATA.companies}개)`;
+  charts.company = new Chart(document.getElementById('coChart'), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        data:values,
+        backgroundColor: labels.map((l,i)=>l==='기타'?'#d8dce8':BLUE_PALETTE[i%BLUE_PALETTE.length]),
+        borderRadius:4,borderSkipped:false,
+      }]
     },
-    scales: {
-      x: axis === 'y'
-        ? { grid:{color:'#f0f0f0'}, ticks:{font:{size:11},color:'#888'} }
-        : { grid:{display:false},   ticks:{font:{size:10},color:'#888'} },
-      y: axis === 'y'
-        ? { grid:{display:false},   ticks:{font:{size:11},color:'#444'} }
-        : { grid:{color:'#f0f0f0'}, ticks:{font:{size:11},color:'#888'} },
+    options:{
+      responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}명`}}},
+      scales:{
+        x:{grid:{color:'#f0f2f8'},ticks:{font:{size:11},color:'#9aa3bc'}},
+        y:{grid:{display:false},ticks:{font:{size:11},color:'#4a5568'}}
+      }
     }
-  };
+  });
 }
 
-// ── 실행 ──
-loadData();
+function renderIndustry() {
+  const entries = Object.entries(DATA.industry);
+  const total = entries.reduce((s,[,v])=>s+v,0);
+  charts.industry = new Chart(document.getElementById('indChart'), {
+    type:'doughnut',
+    data:{
+      labels:entries.map(([k])=>k),
+      datasets:[{
+        data:entries.map(([,v])=>v),
+        backgroundColor:BLUE_PALETTE.slice(0,entries.length),
+        borderWidth:2,borderColor:'#fff',hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}명 (${(c.raw/total*100).toFixed(1)}%)`}}
+      }
+    }
+  });
+  const list = document.getElementById('ind-list');
+  const max = entries[0][1];
+  entries.forEach(([k,v],i)=>{
+    list.innerHTML += `<div class="ind-item">
+      <span class="ind-name">${k}</span>
+      <div class="ind-bar-wrap"><div class="ind-bar" style="width:${v/max*100}%;background:${BLUE_PALETTE[i]}"></div></div>
+      <span class="ind-num">${v}</span>
+      <span class="ind-pct">${(v/total*100).toFixed(1)}%</span>
+    </div>`;
+  });
+}
+
+function renderClass() {
+  const entries = Object.entries(DATA.class);
+  const max = Math.max(...entries.map(([,v])=>v));
+  const grid = document.getElementById('class-grid');
+  entries.forEach(([k,v])=>{
+    const pct = v/max;
+    const h = Math.max(4, Math.round(pct*44));
+    grid.innerHTML += `<div class="class-item">
+      <div class="ci-bar" style="height:${h}px;"></div>
+      <div class="ci-num">${v}</div>
+      <div class="ci-label">${k}</div>
+    </div>`;
+  });
+  charts.class = new Chart(document.getElementById('clChart'), {
+    type:'line',
+    data:{
+      labels:entries.map(([k])=>k),
+      datasets:[{
+        data:entries.map(([,v])=>v),
+        borderColor:'#003478',backgroundColor:'rgba(0,52,120,0.08)',
+        borderWidth:2,fill:true,tension:0.4,
+        pointBackgroundColor:'#003478',pointRadius:3,pointHoverRadius:5,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}명`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:10},color:'#9aa3bc',maxRotation:0}},
+        y:{grid:{color:'#f0f2f8'},ticks:{font:{size:11},color:'#9aa3bc'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function renderDegree() {
+  const entries = Object.entries(DATA.degree).sort((a,b)=>b[1]-a[1]);
+  const total = entries.reduce((s,[,v])=>s+v,0);
+  charts.degree = new Chart(document.getElementById('degChart'), {
+    type:'doughnut',
+    data:{
+      labels:entries.map(([k])=>k),
+      datasets:[{
+        data:entries.map(([,v])=>v),
+        backgroundColor:DEG_COLORS,
+        borderWidth:3,borderColor:'#fff',hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}명`}}}
+    }
+  });
+  const legend = document.getElementById('deg-legend');
+  entries.forEach(([k,v],i)=>{
+    legend.innerHTML += `<div class="legend-item">
+      <div class="legend-dot" style="background:${DEG_COLORS[i]}"></div>
+      <span class="legend-name">${k}</span>
+      <span class="legend-count">${v}명</span>
+      <span class="legend-pct">${(v/total*100).toFixed(1)}%</span>
+    </div>`;
+  });
+
+  const grp = {'석사+석사과정':329+155,'박사+박사과정':54+41,'학사':15,'기타':1};
+  charts.degree2 = new Chart(document.getElementById('degChart2'), {
+    type:'bar',
+    data:{
+      labels:Object.keys(grp),
+      datasets:[{
+        data:Object.values(grp),
+        backgroundColor:['#003478','#1a5296','#6aacd2','#d0e4f0'],
+        borderRadius:8,borderSkipped:false,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}명`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},color:'#4a5568'}},
+        y:{grid:{color:'#f0f2f8'},ticks:{font:{size:11},color:'#9aa3bc'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function init() {
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('s-total').textContent = DATA.total.toLocaleString();
+  document.getElementById('s-company').textContent = DATA.companies;
+  document.getElementById('s-industry').textContent = DATA.industries;
+  document.getElementById('s-class').textContent = DATA.classes;
+  document.getElementById('updated').textContent = '2026년 3월 기준';
+  render('company');
+}
+
+init();
 </script>
 </body>
 </html>

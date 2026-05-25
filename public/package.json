@@ -1,1 +1,6 @@
-
+{
+  "name": "kaist-itm-dashboard",
+  "version": "1.0.0",
+  "description": "KAIST I&TM 동문회 대시보드",
+  "engines": { "node": "24.x" }
+}

@@ -9,21 +9,17 @@
 
 const NOTION_VERSION = '2022-06-28';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Cache-Control', 's-maxage=300');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const TOKEN = process.env.NOTION_TOKEN;
   const DB_ID = process.env.NOTION_DATABASE_ID;
 
   if (!TOKEN || !DB_ID) {
-    return res.status(500).json({
-      error: '환경변수(NOTION_TOKEN, NOTION_DATABASE_ID)를 Vercel에 설정해주세요.'
-    });
+    return res.status(500).json({ error: '환경변수를 Vercel에 설정해주세요.' });
   }
 
   try {
@@ -33,7 +29,7 @@ export default async function handler(req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};
 
 async function fetchAll(token, dbId) {
   const results = [];
@@ -53,7 +49,11 @@ async function fetchAll(token, dbId) {
       body: JSON.stringify(body),
     });
 
-    if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+    if (!r.ok) {
+      const e = await r.json();
+      throw new Error(e.message || 'Notion API 오류');
+    }
+
     const data = await r.json();
 
     for (const page of data.results) {
@@ -63,7 +63,6 @@ async function fetchAll(token, dbId) {
         company:  getText(p['소속(회사)']),
         industry: getSelect(p['업종']),
         class:    getSelect(p['기수']),
-        classNum: getNumber(p['기수 번호']),
         degree:   getText(p['최종학위']),
       });
     }
@@ -81,7 +80,6 @@ function aggregate(records) {
     if (r.company)  company[r.company]   = (company[r.company]   || 0) + 1;
     if (r.industry) industry[r.industry] = (industry[r.industry] || 0) + 1;
     if (r.class)    classMap[r.class]    = (classMap[r.class]    || 0) + 1;
-
     const dk = r.degree.includes('박사') ? '박사/박사과정'
              : r.degree.includes('석사') ? '석사/석사과정'
              : r.degree.includes('학사') ? '학사' : '기타';
@@ -96,7 +94,6 @@ function aggregate(records) {
   return { company: sort(company), industry: sort(industry), class: sortClass(classMap), degree: sort(degree) };
 }
 
-const getTitle    = p => p?.title?.[0]?.plain_text?.trim()     || '';
-const getText     = p => p?.rich_text?.[0]?.plain_text?.trim() || '';
-const getSelect   = p => p?.select?.name                       || '';
-const getNumber   = p => p?.number ?? null;
+const getTitle  = p => p?.title?.[0]?.plain_text?.trim()     || '';
+const getText   = p => p?.rich_text?.[0]?.plain_text?.trim() || '';
+const getSelect = p => p?.select?.name                       || '';

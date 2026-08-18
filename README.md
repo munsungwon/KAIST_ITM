@@ -24,7 +24,7 @@ Notion DB와 실시간 연동되는 동문회 현황 대시보드입니다.
 4. "Deploy" 클릭
 
 ### 4단계 — 노션에 임베드
-1. Vercel에서 발급된 URL 복사 (예: https://kaist-dashboard.vercel.app)
+1. Vercel에서 발급된 URL 복사 (예: https://kaist-itm.vercel.app)
 2. 노션 페이지에서 /embed → URL 붙여넣기
 
 ## 데이터 자동 갱신
